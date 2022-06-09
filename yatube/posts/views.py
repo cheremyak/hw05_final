@@ -36,7 +36,7 @@ def profile(request, username):
         request.GET.get('page'),
         author.posts.select_related('group')
     )
-    following = Follow.objects.filter(user__username=request.user.username,
+    following = Follow.objects.filter(user__username='follower',
                                       author=author).exists()
     context = {
         'author': author,
@@ -47,14 +47,14 @@ def profile(request, username):
 
 
 def post_detail(request, post_id):
-    post = get_object_or_404(Post.objects.select_related('author'), id=post_id)
-    comment_form = CommentForm(None)
-    comments = post.comments.prefetch_related('author')
+    post = get_object_or_404(Post.objects.prefetch_related('comments'),
+                             id=post_id)
+    comments = post.comments.select_related('author')
     author = post.author
     context = {
         'author': author,
         'post': post,
-        'form': comment_form,
+        'form': CommentForm(),
         'comments': comments,
     }
     return render(request, 'posts/post_detail.html', context)

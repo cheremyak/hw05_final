@@ -103,7 +103,6 @@ class PostFormTest(TestCase):
         """
         form_data = {
             'text': 'Тестовый комент',
-            'post_id': self.post.id,
         }
         comment_count = Comment.objects.count()
         response = self.author_client.post(
@@ -116,5 +115,6 @@ class PostFormTest(TestCase):
             'posts:post_detail',
             kwargs={'post_id': self.post.pk}))
         self.assertTrue(Comment.objects.filter(
-            text=form_data.get('text', 'post_id'),
+            text=form_data.get('text'),
+            post=self.post.id
         ).exists())
