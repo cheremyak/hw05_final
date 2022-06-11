@@ -37,7 +37,7 @@ def profile(request, username):
         author.posts.select_related('group')
     )
     following = author.following.filter(
-        user__username=request.user.username
+        user__username=request.user
     ).exists()
     context = {
         'author': author,
